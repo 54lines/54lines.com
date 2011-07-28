@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Unmodern Minimalism</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta http-equiv="Content-Language" content="en">
+    <meta http-equiv="X-UA-Compatible" content="IE=7">
+    <meta name="classification" content="Computer Programming">
+    <meta name="description" content="Modern Minimalism">
+    <meta name="copyright" content="54lines.com">
+    <meta name="robots" content="all">
+    <meta name="keywords" content="programming, engineering">
+    <link rel="stylesheet" type="text/css" href="/css/54.css"></link>
+    
+    
+  </head>
+  <body>
+    
+      <div id="header">
+        <p><a href="/"><img src="/img/54lines-withtext-inverted.gif" alt="54lines.com" title=""></a></p>
+        <div id="nav"><ul>
+<li><a href="/why/"> why </a></li>
+<li><a href="http://www.linkedin.com/groups?mostPopular=&amp;gid=3943099"> who </a></li>
+<li><a href="http://www.meetup.com/54lines/">whe(n|re)</a></li>
+<li><a href="http://github.com/54lines">on github</a></li>
+</ul></div>
+        <div class="banter">... including comments.</div>
+      </div>
+    
+    
+      <div id="content">
+        <h1><p><a href="https://github.com/acg/iocopy">iocopy</a></p></h1>
+        <div id="contentnav">
+            <a href="/1/">previous</a>
+            &nbsp;|&nbsp;
+            <a href="/2/">permalink</a>
+            &nbsp;|&nbsp;
+            <a href="/3/">next</a>
+        </div>
+        <table id="codeheading" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <th>author:</th><td><p><a href="http://github.com/acg">Alan Grow</a></p></td>
+                
+                    <th>license:</th><td><p><a href="https://github.com/acg/iocopy/blob/master/LICENSE">BSD</a> </p></td>
+                
+            </tr>
+        </table>
+        <table cellpadding="0" cellspacing="0" border="0">
+          <th class="loc" valign="top">
+            
+              <p class="loc">1</p>
+            
+              <p class="loc">2</p>
+            
+              <p class="loc">3</p>
+            
+              <p class="loc">4</p>
+            
+              <p class="loc">5</p>
+            
+              <p class="loc">6</p>
+            
+              <p class="loc">7</p>
+            
+              <p class="loc">8</p>
+            
+              <p class="loc">9</p>
+            
+              <p class="loc">10</p>
+            
+              <p class="loc">11</p>
+            
+              <p class="loc">12</p>
+            
+              <p class="loc">13</p>
+            
+              <p class="loc">14</p>
+            
+              <p class="loc">15</p>
+            
+              <p class="loc">16</p>
+            
+              <p class="loc">17</p>
+            
+              <p class="loc">18</p>
+            
+              <p class="loc">19</p>
+            
+              <p class="loc">20</p>
+            
+              <p class="loc">21</p>
+            
+              <p class="loc">22</p>
+            
+              <p class="loc">23</p>
+            
+              <p class="loc">24</p>
+            
+              <p class="loc">25</p>
+            
+              <p class="loc">26</p>
+            
+              <p class="loc">27</p>
+            
+              <p class="loc">28</p>
+            
+              <p class="loc">29</p>
+            
+              <p class="loc">30</p>
+            
+              <p class="loc">31</p>
+            
+              <p class="loc">32</p>
+            
+              <p class="loc">33</p>
+            
+              <p class="loc">34</p>
+            
+              <p class="loc">35</p>
+            
+              <p class="loc">36</p>
+            
+              <p class="loc">37</p>
+            
+              <p class="loc">38</p>
+            
+              <p class="loc">39</p>
+            
+              <p class="loc">40</p>
+            
+              <p class="loc">41</p>
+            
+              <p class="loc">42</p>
+            
+              <p class="loc">43</p>
+            
+              <p class="loc">44</p>
+            
+              <p class="loc">45</p>
+            
+              <p class="loc">46</p>
+            
+              <p class="loc">47</p>
+            
+              <p class="loc">48</p>
+            
+              <p class="loc">49</p>
+            
+              <p class="loc">50</p>
+            
+              <p class="loc">51</p>
+            
+              <p class="loc">52</p>
+            
+              <p class="loc">53</p>
+            
+          </th>
+          <td valign="top"><pre>#include &lt;unistd.h&gt; /* read(2), write(2) */
+#include &lt;stdio.h&gt; /* fprintf(3) */
+#include &lt;stdlib.h&gt; /* exit(3), atoi(3) */
+#include &lt;sys/select.h&gt; /* select(2) */
+#include &lt;sys/socket.h&gt; /* shutdown(2) */
+#include &lt;errno.h&gt; /* errno */
+#include &lt;fcntl.h&gt; /* fcntl(2) */
+#include &lt;string.h&gt; /* memmove(3), strerror(3) */
+
+void diesys(char *s) {fprintf(stderr,&#34;%s: %s\n&#34;,s,strerror(errno));exit(errno);}
+
+int main(int argc, char** argv)
+{
+  static int i, j, *fd, bytes, nfds, maxfd, fds[16][2], len[16], active[2];
+  static char buf[16][4096], first=1, verbose;
+  static fd_set fdset[2];
+
+  for (fd=fds[0], argc--, argv++; argc&gt;1 &amp;&amp; nfds&lt;16; nfds++, argc-=2, argv+=2) {
+    if (**argv == &#39;v&#39;) { verbose++; nfds--; argc++; argv--; continue; }
+    for (j=0; j&lt;2; j++, fd++) {
+      if ((*fd = atoi(argv[j])) &gt; maxfd) maxfd = *fd;
+      if (fcntl(*fd,F_SETFL,fcntl(*fd,F_GETFL,0)|O_NONBLOCK)&lt;0) diesys(&#34;fcntl&#34;);
+      active[j] |= (1&lt;&lt;nfds);
+    }
+  }
+
+  while (active[0] | active[1]) {
+    if (!first)
+      if (select(maxfd+1, &amp;fdset[0], &amp;fdset[1], 0, 0) &lt; 0) diesys(&#34;select&#34;);
+    for (first=0, i=0, fd=fds[0]; i&lt;nfds; i++) {
+      for (j=0; j&lt;2; j++, fd++) {
+        if (FD_ISSET(*fd, &amp;fdset[j])) {
+          if (j==1 &amp;&amp; (bytes = write(*fd, buf[i], len[i])) &gt; 0)
+            memmove(buf[i], buf[i]+bytes, len[i]-bytes);
+          else
+            bytes = read(*fd, buf[i], sizeof(buf[i]));
+          if (verbose) fprintf(stderr,&#34;iocopy: %d %c %d\n&#34;,*fd,j?&#39;&lt;&#39;:&#39;&gt;&#39;,bytes);
+          if (bytes &lt; 0) diesys(j ? &#34;write&#34; : &#34;read&#34;);
+          if (j==0 &amp;&amp; bytes == 0) active[0] &amp;= ~(1&lt;&lt;i);
+          len[i] += (j==1 ? -bytes : bytes);
+        }
+        if (j==1 &amp;&amp; !len[i] &amp;&amp; !(active[0] &amp; (1&lt;&lt;i))) active[1] &amp;= ~(1&lt;&lt;i);
+      }
+      for (j=0, fd=fds[i]; j&lt;2; j++, fd++) {
+        if ((j == len[i]&gt;0) &amp;&amp; (active[j] &amp; (1&lt;&lt;i))) FD_SET(*fd, &amp;fdset[j]);
+        else FD_CLR(*fd, &amp;fdset[j]);
+        if (!(active[j] &amp; (1&lt;&lt;i))) shutdown(*fd, j?SHUT_WR:SHUT_RD);
+      }
+    }
+  }
+
+  return 0;
+}</pre></td>
+        </table>
+      </div>
+    
+    
+      <div id="footer">
+        <p class="copyright"><p>&copy;2011 54lines.com. all code under original license from authors. text is under the <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-SA</a></p></p>
+      </div>
+    
+  </body>
+</html>

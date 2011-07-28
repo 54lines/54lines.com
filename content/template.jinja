@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta http-equiv="Content-Language" content="en">
+    <meta http-equiv="X-UA-Compatible" content="IE=7">
+    <meta name="classification" content="Computer Programming">
+    <meta name="description" content="Modern Minimalism">
+    <meta name="copyright" content="54lines.com">
+    <meta name="robots" content="all">
+    <meta name="keywords" content="programming, engineering">
+    <link rel="stylesheet" type="text/css" href="/css/54.css"></link>
+    {% block css %}{% endblock %}
+    {% block javascript %}{% endblock %}
+  </head>
+  <body>
+    {% block header %}
+      <div id="header">
+        {% block masthead %}{{ pagetitle }}{% endblock %}
+        {% block nav %}<div id="nav">{{ nav }}</div>{% endblock %}
+        <div class="banter">{{ banter }}</div>
+      </div>
+    {% endblock %}
+    {% block content %}
+      <div id="content">
+        <h1>{{ name }}</h1>
+        <div id="contentnav">
+            <a href="/{{ previous }}/">previous</a>
+            &nbsp;|&nbsp;
+            <a href="/{{ permalink }}/">permalink</a>
+            &nbsp;|&nbsp;
+            <a href="/{{ next }}/">next</a>
+        </div>
+        <table id="codeheading" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <th>author:</th><td>{{ author }}</td>
+                {% if license %}
+                    <th>license:</th><td>{{ license }}</td>
+                {% endif %}
+            </tr>
+        </table>
+        <table cellpadding="0" cellspacing="0" border="0">
+          <th class="loc" valign="top">
+            {% for i in range(1, loc|int+1) %}
+              <p class="loc">{{ i }}</p>
+            {% endfor %}
+          </th>
+          <td valign="top"><pre>{{ code|e }}</pre></td>
+        </table>
+      </div>
+    {% endblock %}
+    {% block footer %}
+      <div id="footer">
+        <p class="copyright">{{ copyright }}</p>
+      </div>
+    {% endblock %}
+  </body>
+</html>

@@ -1,0 +1,3 @@
+#!/bin/sh
+# mdml requires perl and Markdown.pl (here renamed to ./bin/mdml)
+cat /dev/stdin | ${0%/*}/../bin/mdml --html4tags

@@ -1,0 +1,17 @@
+#!/usr/bin/env python
+# preliminary adaptor for jinja templates
+# requires jinja2 and python
+import os
+import sys
+sys.path.append('lib')
+sys.path.append('../lib')
+import jinja2
+
+t = jinja2.Template(sys.stdin.read())
+t.environment.loader = jinja2.FileSystemLoader(
+    os.environ['SRC_DIR'].split(':')[1:]
+)
+try:
+    sys.stdout.write('%s\n' % t.render(**dict(os.environ)).encode('utf8'))
+except RuntimeError, e:
+    print >> sys.stderr, e

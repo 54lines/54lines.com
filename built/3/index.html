@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Unmodern Minimalism</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta http-equiv="Content-Language" content="en">
+    <meta http-equiv="X-UA-Compatible" content="IE=7">
+    <meta name="classification" content="Computer Programming">
+    <meta name="description" content="Modern Minimalism">
+    <meta name="copyright" content="54lines.com">
+    <meta name="robots" content="all">
+    <meta name="keywords" content="programming, engineering">
+    <link rel="stylesheet" type="text/css" href="/css/54.css"></link>
+    
+    
+  </head>
+  <body>
+    
+      <div id="header">
+        <p><a href="/"><img src="/img/54lines-withtext-inverted.gif" alt="54lines.com" title=""></a></p>
+        <div id="nav"><ul>
+<li><a href="/why/"> why </a></li>
+<li><a href="http://www.linkedin.com/groups?mostPopular=&amp;gid=3943099"> who </a></li>
+<li><a href="http://www.meetup.com/54lines/">whe(n|re)</a></li>
+<li><a href="http://github.com/54lines">on github</a></li>
+</ul></div>
+        <div class="banter">... including comments.</div>
+      </div>
+    
+    
+      <div id="content">
+        <h1><p><a href="https://github.com/matthewstory/d2cdb">d2cdb</a></p></h1>
+        <div id="contentnav">
+            <a href="/2/">previous</a>
+            &nbsp;|&nbsp;
+            <a href="/3/">permalink</a>
+            &nbsp;|&nbsp;
+            <a href="/3/">next</a>
+        </div>
+        <table id="codeheading" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <th>author:</th><td><p><a href="http://github.com/matthewstory">Matthew Story</a></p></td>
+                
+                    <th>license:</th><td><p><a href="https://github.com/matthewstory/d2cdb/blob/master/LICENSE">BSD</a> </p></td>
+                
+            </tr>
+        </table>
+        <table cellpadding="0" cellspacing="0" border="0">
+          <th class="loc" valign="top">
+            
+              <p class="loc">1</p>
+            
+              <p class="loc">2</p>
+            
+              <p class="loc">3</p>
+            
+              <p class="loc">4</p>
+            
+              <p class="loc">5</p>
+            
+              <p class="loc">6</p>
+            
+              <p class="loc">7</p>
+            
+              <p class="loc">8</p>
+            
+              <p class="loc">9</p>
+            
+              <p class="loc">10</p>
+            
+              <p class="loc">11</p>
+            
+              <p class="loc">12</p>
+            
+              <p class="loc">13</p>
+            
+              <p class="loc">14</p>
+            
+              <p class="loc">15</p>
+            
+              <p class="loc">16</p>
+            
+              <p class="loc">17</p>
+            
+              <p class="loc">18</p>
+            
+              <p class="loc">19</p>
+            
+              <p class="loc">20</p>
+            
+              <p class="loc">21</p>
+            
+              <p class="loc">22</p>
+            
+              <p class="loc">23</p>
+            
+              <p class="loc">24</p>
+            
+              <p class="loc">25</p>
+            
+              <p class="loc">26</p>
+            
+              <p class="loc">27</p>
+            
+              <p class="loc">28</p>
+            
+              <p class="loc">29</p>
+            
+              <p class="loc">30</p>
+            
+              <p class="loc">31</p>
+            
+              <p class="loc">32</p>
+            
+              <p class="loc">33</p>
+            
+              <p class="loc">34</p>
+            
+              <p class="loc">35</p>
+            
+              <p class="loc">36</p>
+            
+              <p class="loc">37</p>
+            
+              <p class="loc">38</p>
+            
+              <p class="loc">39</p>
+            
+              <p class="loc">40</p>
+            
+              <p class="loc">41</p>
+            
+              <p class="loc">42</p>
+            
+              <p class="loc">43</p>
+            
+              <p class="loc">44</p>
+            
+              <p class="loc">45</p>
+            
+              <p class="loc">46</p>
+            
+              <p class="loc">47</p>
+            
+              <p class="loc">48</p>
+            
+              <p class="loc">49</p>
+            
+              <p class="loc">50</p>
+            
+          </th>
+          <td valign="top"><pre>#!/bin/sh
+# @author: Matthew Story &lt;matthewstory@gmail.com&gt;
+# @license: BSD (see: LICENSE)
+# d2cdb -- loads file contents into cdb keyed on file name, recursively
+# -t forces use of tinycdb&#39;s cdb program (with -c)
+# -m uses leaf directory as key, uses filenames for key ordering
+barf() { echo &#34;fatal: $0: $*&#34; &gt;&amp;2; exit 111; }
+safe() { &#34;$@&#34; || barf &#34;cannot $*&#34;; }
+usage() { echo &#34;usage: $0 [-tm] cdb cdbtmp dir [[dir]...]&#34; &gt;&amp;2; exit 100; }
+
+cdbmake=&#39;cdbmake&#39;
+tinycdb=&#39;cdb -c -t&#39;
+cdb=&#34;$cdbmake&#34;
+multi=0
+while getopts &#39;tm&#39; opt 
+do
+    case &#34;$opt&#34; in 
+        t) cdb=&#34;$tinycdb&#34;
+            ;;
+        m) multi=1
+            ;;
+        *) usage 
+            ;;
+    esac
+done
+shift $((OPTIND - 1)) # drop opts
+
+# validation
+[ $# -lt 3 ] &amp;&amp; usage
+cdbfile=&#34;$1&#34; 
+cdbtmp=&#34;$2&#34;
+if [ &#34;$cdb&#34; = &#34;$tinycdb&#34; ] 
+then
+    cdbfile=&#34;$2&#34;
+    cdbtmp=&#34;$1&#34;
+fi
+shift 2;
+
+{ for dir in &#34;$@&#34;
+do 
+    [ -d &#34;$dir&#34; ] || barf &#34;$dir is not a directory&#34;; 
+    safe find -L &#34;$dir&#34; -type f | sed &#34;s@^$dir/*@@&#34; | while read f 
+    do
+         key=&#34;$f&#34;
+         [ 0 -lt $multi ] &amp;&amp; key=&#34;${f%/*}&#34;
+         safe printf &#34;+%d,%d:%s-&gt;&#34; &#34;${#key}&#34; &#34;$(stat -f &#39;%z&#39; &#34;$dir/$f&#34;)&#34; &#34;$key&#34;
+         printf &#34;\n&#34; | safe cat &#34;$dir/$f&#34; -
+    done
+done
+printf &#34;\n&#34;; } | safe $cdb &#34;$cdbfile&#34; &#34;$cdbtmp&#34;</pre></td>
+        </table>
+      </div>
+    
+    
+      <div id="footer">
+        <p class="copyright"><p>&copy;2011 54lines.com. all code under original license from authors. text is under the <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-SA</a></p></p>
+      </div>
+    
+  </body>
+</html>
